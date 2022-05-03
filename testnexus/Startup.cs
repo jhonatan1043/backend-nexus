@@ -18,6 +18,7 @@ namespace testnexus
 {
     public class Startup
     {
+        readonly string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +29,16 @@ namespace testnexus
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(option =>
+            {
+                option.AddPolicy(name: myAllowSpecificOrigins,
+                  builder =>
+                  {
+                      builder.WithOrigins("http://localhost:4200")
+                             .AllowAnyHeader()
+                             .AllowAnyMethod();
+                  });
+            });
 
             services.AddControllers();
             services.AddDbContext<ContextBook>(x =>{
@@ -53,6 +64,8 @@ namespace testnexus
 
             app.UseRouting();
 
+            app.UseCors(myAllowSpecificOrigins);
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
