@@ -22,7 +22,10 @@ namespace testnexus.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Book>>> Get()
         {
-            return  await _contextBook.books.ToListAsync();
+            return  await _contextBook.books
+                      .Include(x => x.Autor)
+                      .Include(x => x.Editorial)
+                      .ToListAsync();
         }
 
         [HttpPost]
